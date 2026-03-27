@@ -4,7 +4,7 @@ import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.scss'
 import { useGetPostsQuery, useGetTodosQuery, useCreatePostMutation } from './api/modules/dummyApi'
-import { Input as AppInput, Textarea, Text, Button } from './atoms'
+import { Input as AppInput, Textarea, Text, Button, Icon } from './atoms'
 
 // ── Upload icon ───────────────────────────────────────────────────────────────
 function UploadIcon() {
@@ -477,6 +477,82 @@ function App() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <Button fullWidth leftIcon={<UploadIcon />}>Upload File</Button>
               <Button fullWidth variant="outline">Cancel</Button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════ */}
+      {/* Icon Demo                                                          */}
+      {/* ══════════════════════════════════════════════════════════════════ */}
+      <section style={{ padding: '48px 32px', maxWidth: '860px', margin: '0 auto' }}>
+        <Text variant="h2" style={{ marginBottom: '8px' }}>Icon</Text>
+        <Text variant="body" color="muted" style={{ marginBottom: '32px' }}>
+          Loads SVGs by name from <code>src/assets/icons/</code>. Drop any <code>.svg</code> file there and pass its name.
+        </Text>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+
+          {/* Sizes */}
+          <div>
+            <Text variant="overline" color="muted" style={{ marginBottom: '12px', display: 'block' }}>Sizes</Text>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'flex-end' }}>
+              {([16, 24, 32, 48, 64] as const).map((s) => (
+                <div key={s} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                  <Icon name="react" size={s} />
+                  <Text variant="caption" color="muted">{s}</Text>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Colors */}
+          <div>
+            <Text variant="overline" color="muted" style={{ marginBottom: '12px', display: 'block' }}>Color via prop</Text>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'center' }}>
+              {(['#00D8FF', '#6366f1', '#f43f5e', '#10b981', '#f59e0b']).map((c) => (
+                <Icon key={c} name="react" size={36} color={c} />
+              ))}
+            </div>
+          </div>
+
+          {/* Opacity via Tailwind */}
+          <div>
+            <Text variant="overline" color="muted" style={{ marginBottom: '12px', display: 'block' }}>Tailwind className</Text>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'center' }}>
+              <Icon name="react" size={36} className="opacity-25" />
+              <Icon name="react" size={36} className="opacity-50" />
+              <Icon name="react" size={36} className="opacity-75" />
+              <Icon name="react" size={36} className="opacity-100" />
+            </div>
+          </div>
+
+          {/* Inline with text */}
+          <div>
+            <Text variant="overline" color="muted" style={{ marginBottom: '12px', display: 'block' }}>Inline with text</Text>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Icon name="react" size={20} color="#00D8FF" label="React logo" />
+              <Text variant="body">Built with React</Text>
+            </div>
+          </div>
+
+          {/* Inside a Button */}
+          <div>
+            <Text variant="overline" color="muted" style={{ marginBottom: '12px', display: 'block' }}>Inside Button</Text>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
+              <Button leftIcon={<Icon name="react" size={14} />}>Icon Left</Button>
+              <Button variant="outline" rightIcon={<Icon name="react" size={14} />}>Icon Right</Button>
+              <Button size="icon" variant="secondary"><Icon name="react" size={16} /></Button>
+            </div>
+          </div>
+
+          {/* Missing icon fallback */}
+          <div>
+            <Text variant="overline" color="muted" style={{ marginBottom: '12px', display: 'block' }}>Missing icon fallback</Text>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Icon name="does-not-exist" size={32} className="rounded border border-dashed border-red-400" />
+              <Text variant="caption" color="muted">name="does-not-exist" → empty placeholder (warning in console)</Text>
             </div>
           </div>
 
