@@ -14,12 +14,14 @@ export interface IconProps {
   width?: number;
   /** Explicit height override */
   height?: number;
-  /** Tailwind / CSS class applied to the <svg> element */
+  /** Tailwind / CSS class applied to the wrapper span */
   className?: string;
   /** Accessible label; sets aria-label. Omit for decorative icons. */
   label?: string;
-  /** color applied via CSS color (affects currentColor strokes/fills) */
+  /** Color applied via CSS currentColor — overrides hardcoded SVG fill/stroke */
   color?: string;
+  /** Color applied on hover — overrides hardcoded SVG fill/stroke on :hover */
+  hoverColor?: string;
 }
 
 // Vite glob import — eagerly loads all SVG files from assets/icons as raw strings
@@ -39,10 +41,15 @@ const Icon = React.forwardRef<HTMLSpanElement, IconProps>(
       className,
       label,
       color,
+      hoverColor,
       ...props
     },
     ref
   ) => {
+    // Stable unique id per instance for scoped hover CSS
+    const uid = React.useId().replace(/:/g, "");
+    const spanId = `icon-${uid}`;
+
     const key = `/src/assets/icons/${name}.svg`;
     const mod = svgModules[key];
 
@@ -60,6 +67,7 @@ const Icon = React.forwardRef<HTMLSpanElement, IconProps>(
       return (
         <span
           ref={ref}
+          id={spanId}
           role="img"
           aria-label={label ?? name}
           style={{
@@ -76,15 +84,20 @@ const Icon = React.forwardRef<HTMLSpanElement, IconProps>(
 
     const rawSvg: string = mod.default;
 
-    // Inject width/height/aria attributes directly into the SVG string
     const resolvedWidth = width ?? size;
     const resolvedHeight = height ?? size;
 
-    // Strip the outermost <svg ...> opening tag and rewrite its attributes
-    const injected = rawSvg.replace(
+    // Replace hardcoded fill/stroke (except "none"/"transparent") with currentColor
+    // so the CSS `color` property controls the icon color.
+    const forceCurrentColor = (svg: string) =>
+      svg
+        .replace(/\sfill="(?!none|transparent)[^"]*"/gi, ' fill="currentColor"')
+        .replace(/\sstroke="(?!none|transparent)[^"]*"/gi, ' stroke="currentColor"');
+
+    // Rewrite the opening <svg> tag — strip width/height/class, inject aria attrs
+    let injected = rawSvg.replace(
       /^<svg([^>]*)>/i,
       (_, attrs: string) => {
-        // Remove existing width, height, class attributes so we control them
         const cleaned = attrs
           .replace(/\s*width="[^"]*"/gi, "")
           .replace(/\s*height="[^"]*"/gi, "")
@@ -98,14 +111,33 @@ const Icon = React.forwardRef<HTMLSpanElement, IconProps>(
       }
     );
 
+    // When color or hoverColor is provided, replace hardcoded fills/strokes
+    // with currentColor so the CSS color cascades correctly
+    if (color || hoverColor) {
+      injected = forceCurrentColor(injected);
+    }
+
     return (
-      <span
-        ref={ref}
-        style={{ display: "inline-flex", color, flexShrink: 0 }}
-        className={cn("inline-flex shrink-0 items-center justify-center", className)}
-        dangerouslySetInnerHTML={{ __html: injected }}
-        {...props}
-      />
+      <>
+        {/* Scoped hover style — only injected when hoverColor is provided */}
+        {hoverColor && (
+          <style>{`#${spanId}:hover { color: ${hoverColor} !important; }`}</style>
+        )}
+        <span
+          ref={ref}
+          id={spanId}
+          style={{
+            display: "inline-flex",
+            color,
+            flexShrink: 0,
+            transition: hoverColor ? "color 0.15s ease" : undefined,
+            cursor: hoverColor ? "pointer" : undefined,
+          }}
+          className={cn("inline-flex shrink-0 items-center justify-center", className)}
+          dangerouslySetInnerHTML={{ __html: injected }}
+          {...props}
+        />
+      </>
     );
   }
 );

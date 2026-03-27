@@ -517,6 +517,18 @@ function App() {
             </div>
           </div>
 
+          {/* Hover color */}
+          <div>
+            <Text variant="overline" color="muted" style={{ marginBottom: '12px', display: 'block' }}>Hover color (hover over each icon)</Text>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'center' }}>
+              <Icon name="react" size={36} color="#94a3b8" hoverColor="#00D8FF" />
+              <Icon name="react" size={36} color="#94a3b8" hoverColor="#6366f1" />
+              <Icon name="react" size={36} color="#10b981" hoverColor="#f43f5e" />
+              <Icon name="react" size={36} color="#94a3b8" hoverColor="#10b981" />
+              <Icon name="react" size={36} color="#94a3b8" hoverColor="#f59e0b" />
+            </div>
+          </div>
+
           {/* Opacity via Tailwind */}
           <div>
             <Text variant="overline" color="muted" style={{ marginBottom: '12px', display: 'block' }}>Tailwind className</Text>
