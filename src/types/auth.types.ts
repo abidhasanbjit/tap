@@ -1,9 +1,18 @@
+// ── Roles ─────────────────────────────────────────────────────────────────────
+export const Role = {
+  SUPER_ADMIN: 'super_admin',
+  ADMIN: 'admin',
+  USER: 'user',
+} as const;
+
+export type Role = (typeof Role)[keyof typeof Role];
+
 // ── User ─────────────────────────────────────────────────────────────────────
 export interface User {
   id: string;
   email: string;
   name: string;
-  role: string;
+  role: Role;
 }
 
 // ── Auth state (Redux slice) ──────────────────────────────────────────────────

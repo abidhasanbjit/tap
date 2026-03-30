@@ -4,7 +4,7 @@ import type { RootState } from '../store';
 import { updateTokens, setUnauthenticated } from '../store/slices/authSlice';
 import type { RefreshTokenResponse } from '../types/auth.types';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000/api';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000/api';
 
 // ── Base query that attaches the Bearer token to every request ────────────────
 const baseQueryWithAuth = fetchBaseQuery({
